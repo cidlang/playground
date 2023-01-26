@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetChar(t *testing.T) {
+func TestAnaLexGetChar(t *testing.T) {
 	var c char
 
 	buffer := bytes.NewBufferString("bar")
@@ -23,7 +23,7 @@ func TestGetChar(t *testing.T) {
 	assert.Equal(t, char('r'), c)
 }
 
-func TestGetCharCases(t *testing.T) {
+func TestAnaLexGetCharCases(t *testing.T) {
 	var c char
 
 	buffer := bytes.NewBufferString("FOo")
@@ -39,7 +39,7 @@ func TestGetCharCases(t *testing.T) {
 	assert.Equal(t, char('o'), c)
 }
 
-func TestGetCharSpecial(t *testing.T) {
+func TestAnaLexGetCharSpecial(t *testing.T) {
 	var c char
 
 	buffer := bytes.NewBufferString(" \n\t")
@@ -58,7 +58,7 @@ func TestGetCharSpecial(t *testing.T) {
 	assert.Equal(t, charEOF, c)
 }
 
-func TestUnGetChar(t *testing.T) {
+func TestAnaLexUnGetChar(t *testing.T) {
 	var c char
 
 	buffer := bytes.NewBufferString("foo")
@@ -71,7 +71,7 @@ func TestUnGetChar(t *testing.T) {
 	assert.Equal(t, char('f'), c)
 }
 
-func TestReadNumber(t *testing.T) {
+func TestAnaLexReadNumber(t *testing.T) {
 	tests := []struct {
 		input    string
 		output   int
@@ -94,7 +94,7 @@ func TestReadNumber(t *testing.T) {
 	}
 }
 
-func TestReadAlNum(t *testing.T) {
+func TestAnaLexReadAlNum(t *testing.T) {
 	tests := []struct {
 		input    string
 		output   string
@@ -115,4 +115,54 @@ func TestReadAlNum(t *testing.T) {
 			assert.Equal(t, test.nextChar, analyser.getChar())
 		})
 	}
+}
+
+func TestAnaLexNext(t *testing.T) {
+	input := bytes.NewBufferString(`
+	  1234
+	  div
+	  mod
+	  MOD
+	  42fooBar
+	  barFoo42
+	  +`)
+	al := NewAnaLex(input)
+
+	var exp, act Symbol
+
+	exp = Symbol{component: NUM, lexeme: "", value: 1234}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: DIV, lexeme: "div", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: MOD, lexeme: "mod", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: ID, lexeme: "MOD", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: NUM, lexeme: "", value: 42}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: ID, lexeme: "fooBar", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: ID, lexeme: "barFoo42", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: '+', lexeme: "", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
+
+	exp = Symbol{component: END, lexeme: "", value: 0}
+	act = al.Next()
+	assert.Equal(t, exp, act)
 }

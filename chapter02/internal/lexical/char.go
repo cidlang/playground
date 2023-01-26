@@ -1,5 +1,9 @@
 package lexical
 
+const (
+	charEOF char = 0
+)
+
 type char byte
 
 func (c char) isBlank() bool {

@@ -1,28 +1,68 @@
 package lexical
 
-import "bytes"
-
-const (
-	charEOF char = 0
+import (
+	"bytes"
 )
 
 type AnaLex interface {
-	Next() Component
-}
-
-type anaLex struct {
-	input      *bytes.Buffer
-	position   int
-	numLine    int
-	valcomplex int
+	Next() Symbol
 }
 
 func NewAnaLex(input *bytes.Buffer) AnaLex {
-	return &anaLex{input: input}
+	return newAnaLex(input, defaultKeywords)
 }
 
-func (a *anaLex) Next() Component {
-	panic("not implemented")
+func newAnaLex(input *bytes.Buffer, ss []Symbol) AnaLex {
+	st := newSymbolTable(ss)
+	return &anaLex{input: input, st: st}
+}
+
+type anaLex struct {
+	input   *bytes.Buffer
+	st      symbolTable
+	numLine int
+}
+
+func (a *anaLex) Next() Symbol {
+	var c char
+
+	for {
+		c = a.getChar()
+
+		if c.isBlank() {
+
+		} else if c.isNewLine() {
+			a.numLine++
+		} else if c.isDigit() {
+			a.unGetChar()
+			num := a.readNumber()
+			return Symbol{
+				lexeme:    "",
+				value:     num,
+				component: NUM,
+			}
+		} else if c.isAlpha() {
+			var lexeme string
+			for c.isAlNum() {
+				lexeme = lexeme + string(c)
+				c = a.getChar()
+			}
+
+			if c != charEOF {
+				a.unGetChar()
+			}
+
+			symbol, found := a.st.search(lexeme)
+			if !found {
+				symbol = a.st.insert(lexeme, ID)
+			}
+			return symbol
+		} else if c.isEOF() {
+			return Symbol{component: END}
+		} else {
+			return Symbol{component: Component(c)}
+		}
+	}
 }
 
 func (a *anaLex) getChar() char {
