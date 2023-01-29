@@ -3,19 +3,15 @@ package lexical
 type symbolTable map[string]Symbol
 
 func (st symbolTable) insert(lexeme string, component Component) Symbol {
-	symbol := Symbol{
-		lexeme:    lexeme,
-		value:     0,
-		component: component,
-	}
+	s := NewSymbol(component, lexeme, 0)
 
-	st[lexeme] = symbol
-	return symbol
+	st[lexeme] = s
+	return s
 }
 
 func (st symbolTable) search(lexeme string) (Symbol, bool) {
-	symbol, found := st[lexeme]
-	return symbol, found
+	s, found := st[lexeme]
+	return s, found
 }
 
 func newSymbolTable(ss []Symbol) symbolTable {

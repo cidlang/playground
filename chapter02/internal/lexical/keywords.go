@@ -3,6 +3,6 @@ package lexical
 type keywords []Symbol
 
 var defaultKeywords = keywords{
-	{lexeme: "div", component: DIV},
-	{lexeme: "mod", component: MOD},
+	symbol{lexeme: "div", component: DIV},
+	symbol{lexeme: "mod", component: MOD},
 }

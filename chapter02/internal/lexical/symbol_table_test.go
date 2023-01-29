@@ -8,10 +8,7 @@ import (
 
 func TestSymbolTableInsert(t *testing.T) {
 	st := make(symbolTable, 0)
-	expected := Symbol{
-		lexeme:    "foo-bar",
-		component: NUM,
-	}
+	expected := NewSymbol(NUM, "foo-bar", 0)
 	actual := st.insert("foo-bar", NUM)
 
 	assert.Equal(t, expected, actual)
@@ -19,10 +16,7 @@ func TestSymbolTableInsert(t *testing.T) {
 
 func TestSymbolTableSearch(t *testing.T) {
 	st := make(symbolTable, 0)
-	expected := Symbol{
-		lexeme:    "bar-foo",
-		component: ID,
-	}
+	expected := NewSymbol(ID, "bar-foo", 0)
 	st.insert("bar-foo", ID)
 	actual, found := st.search("bar-foo")
 
@@ -32,7 +26,8 @@ func TestSymbolTableSearch(t *testing.T) {
 
 func TestSymbolTableSearchNotFound(t *testing.T) {
 	st := make(symbolTable, 0)
-	expected := Symbol{}
+	expected := Symbol(nil)
+
 	st.insert("foo-bar", NUM)
 	actual, found := st.search("bar-foo")
 
@@ -41,8 +36,8 @@ func TestSymbolTableSearchNotFound(t *testing.T) {
 }
 
 func TestNewSymbolTable(t *testing.T) {
-	sFoo := Symbol{lexeme: "foo-bar", component: NUM}
-	sBar := Symbol{lexeme: "bar-foo", component: ID}
+	sFoo := NewSymbol(NUM, "foo-bar", 0)
+	sBar := NewSymbol(ID, "bar-foo", 0)
 
 	ss := []Symbol{sFoo, sBar}
 	st := newSymbolTable(ss)

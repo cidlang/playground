@@ -130,39 +130,39 @@ func TestAnaLexNext(t *testing.T) {
 
 	var exp, act Symbol
 
-	exp = Symbol{component: NUM, lexeme: "", value: 1234}
+	exp = NewSymbol(NUM, "", 1234)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: DIV, lexeme: "div", value: 0}
+	exp = NewSymbol(DIV, "div", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: MOD, lexeme: "mod", value: 0}
+	exp = NewSymbol(MOD, "mod", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: ID, lexeme: "MOD", value: 0}
+	exp = NewSymbol(ID, "MOD", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: NUM, lexeme: "", value: 42}
+	exp = NewSymbol(NUM, "", 42)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: ID, lexeme: "fooBar", value: 0}
+	exp = NewSymbol(ID, "fooBar", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: ID, lexeme: "barFoo42", value: 0}
+	exp = NewSymbol(ID, "barFoo42", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: '+', lexeme: "", value: 0}
+	exp = NewSymbol('+', "", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 
-	exp = Symbol{component: END, lexeme: "", value: 0}
+	exp = NewSymbol(END, "", 0)
 	act = al.Next()
 	assert.Equal(t, exp, act)
 }

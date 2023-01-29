@@ -36,11 +36,7 @@ func (a *anaLex) Next() Symbol {
 		} else if c.isDigit() {
 			a.unGetChar()
 			num := a.readNumber()
-			return Symbol{
-				lexeme:    "",
-				value:     num,
-				component: NUM,
-			}
+			return NewSymbol(NUM, "", num)
 		} else if c.isAlpha() {
 			var lexeme string
 			for c.isAlNum() {
@@ -58,9 +54,9 @@ func (a *anaLex) Next() Symbol {
 			}
 			return symbol
 		} else if c.isEOF() {
-			return Symbol{component: END}
+			return NewSymbol(END, "", 0)
 		} else {
-			return Symbol{component: Component(c)}
+			return NewSymbol(Component(c), "", 0)
 		}
 	}
 }
