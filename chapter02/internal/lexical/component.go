@@ -8,4 +8,8 @@ const (
 	END
 )
 
-type Component int
+type Component rune
+
+func (c Component) ToString() string {
+	return string(c)
+}
